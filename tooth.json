@@ -12,6 +12,12 @@
         ],
         "asset_url": "https://github.com/heyhey123-git/QuickBackup/releases/download/v1.0.0/QuickBackup.zip"
     },
+    "prerequisites": {
+        "github.com/LiteLDev/LeviLamina": ">=0.9.0"
+    },
+        "dependencies": {
+        "gitea.litebds.com/LiteLDev/legacy-script-engine-nodejs": ">=0.4.7"
+      },
     "files": {
         "place": [
             {
@@ -19,11 +25,5 @@
                 "dest": "plugins/QuickBackup/"
             }
         ]
-    },
-    "prerequisites": {
-        "github.com/LiteLDev/LeviLamina": ">=0.9.0"
-    },
-        "dependencies": {
-        "gitea.litebds.com/LiteLDev/legacy-script-engine-nodejs": ">=0.4.7"
-      }
+    }
 }
