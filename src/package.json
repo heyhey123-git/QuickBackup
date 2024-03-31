@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@steezcram/sevenzip": "^1.1.6",
+    "fs": "^0.0.1-security",
+    "fs-extra": "^11.2.0",
+    "node-schedule": "^2.1.1"
+  },
+  "name": "quickbackup",
+  "version": "1.0.0",
+  "description": "To help you with backing up your BDS archive easily.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
