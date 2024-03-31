@@ -19,6 +19,7 @@ This plugin relies on **legacy-script-engine-nodejs**. Before installing this pl
 
 **Installation**
 
+### Download by release(Recommended)
 For **levilamina**, simply extract the plugin's compressed package and place it in the plugin folder as shown below:
 
 ```mermaid
@@ -33,6 +34,12 @@ flowchart LR
 ```
 
 For **LiteloaderBDS**, change the plugin's file extension to `.llplugin` and directly place it in the server's `plugins` folder. After completing these steps, don't forget to restart the server.
+
+### Installation by Lip
+
+```bash
+lip install github.com/heyhey123-git/QuickBackup@1.0.0
+```
 
 **Usage**
 
