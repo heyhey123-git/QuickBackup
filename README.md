@@ -15,6 +15,10 @@
 
 本插件运行在使用了 **levilamina/LiteloaderBDS** 的 **BDS服务器** 上。使用本插件可以更好地帮助你对服务器进行安全的热备份，不用担心存档丢失；同时提供了方便的定时执行系统，免去另找其它定时执行工具的麻烦。
 
+**依赖**
+
+本插件依赖于 **legacy-script-engine-nodejs**，请在安装本插件前先安装 [**legacy-script-engine-nodejs**](https://github.com/LiteLDev/LegacyScriptEngine)。
+
 **安装**
 
 对于 **levilamina**，你可以直接解压缩本插件的压缩包，然后将其像下图所示，放到插件文件夹中：
@@ -51,4 +55,18 @@ flowchart LR
    - 当你使用 `query` 来查询任务，但不指定任务名，此时将会返回所有任务。
    - 同理，当你使用 `cancel` 来取消任务，但不指定任务名，此时将会取消所有任务。
 
+**配置文件**
 
+开服后会自动在 `./plugins/QuickBackup/config/config.json`（通常相对于 BDS 服务器可执行文件所在目录）生成配置文件。修改后需要重启服务器才能生效：
+
+```json
+{
+    "language": "zh_CN", // 语言
+    "BDSpath": "./worlds/Bedrock level", // 你的 BDS 存档路径
+    "targetPath": "./backup/", // 你保存备份的目标文件夹
+    "maxRetainDays": 7, // 备份的存档保存的最大天数
+    "TimeOutSecond": 300, // 在备份时间超过指定时间后中止。单位：秒
+    "backupType": "7z" // 压缩格式
+}
+```
+**注意：请不要在Json文件中添加注释，否则可能造成读取失败**
