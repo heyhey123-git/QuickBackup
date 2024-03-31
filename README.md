@@ -20,7 +20,7 @@
 本插件依赖于 **legacy-script-engine-nodejs**，请在安装本插件前先安装 [**legacy-script-engine-nodejs**](https://github.com/LiteLDev/LegacyScriptEngine)。
 
 **安装**
-
+### 从release下载（推荐）
 对于 **levilamina**，你可以直接解压缩本插件的压缩包，然后将其像下图所示，放到插件文件夹中：
 
 ```mermaid
@@ -35,6 +35,12 @@ flowchart LR
 ```
 
 对于 **LiteloaderBDS**，你可以将本插件的后缀名改为 `.llplugin`，然后将其直接放入服务器的 `plugins` 文件夹内。做完上面的这一切，可别忘记重启服务器。
+
+### 使用 Lip
+
+```bash
+lip install github.com/heyhey123-git/QuickBackup@1.0.0
+```
 
 **使用**
 
