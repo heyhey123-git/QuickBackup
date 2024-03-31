@@ -13,6 +13,10 @@
 
 This plugin runs on a **BDS server** that utilizes **levilamina/LiteloaderBDS**. It helps you perform secure hot backups of your server, ensuring that your archives are never lost. Additionally, it provides a convenient scheduling system, eliminating the need for separate tools to manage timed executions.
 
+**Dependencies**
+
+This plugin relies on **legacy-script-engine-nodejs**. Before installing this plugin, please install **legacy-script-engine-nodejs** from: [here](https://github.com/LiteLDev/LegacyScriptEngine).
+
 **Installation**
 
 For **levilamina**, simply extract the plugin's compressed package and place it in the plugin folder as shown below:
@@ -48,3 +52,19 @@ This plugin registers the top-level command `/backup` for quick and efficient ba
    - `actionName`: The name of the task to operate on.
    - When using `query` to retrieve tasks without specifying a task name, all tasks will be returned.
    - Similarly, when using `cancel` to cancel tasks without specifying a task name, all tasks will be canceled.
+
+**配置文件**
+
+After starting the server, a configuration file will be automatically generated at `./plugins/QuickBackup/config/config.json` (usually relative to the directory where the BDS server executable is located). Any modifications made to this file will require a server restart to take effect:
+
+```json
+{
+    "language": "zh_CN", // Language
+    "BDSpath": "./worlds/Bedrock level", // Your BDS archive path
+    "targetPath": "./backup/", // The target folder where you save backups
+    "maxRetainDays": 7, // Maximum number of days to retain backup archives
+    "TimeOutSecond": 300, // Abort backup if it exceeds the specified time. Unit: seconds
+    "backupType": "7z" // Compression format
+}
+```
+**Note: Please refrain from adding comments in the JSON file, as it may cause reading failures.**
