@@ -5,7 +5,7 @@
 
 # README.md
 - en [English](readme/README.en.md)
-- zh_CN [简体中文](README.md)
+- zh_CN [简体中文](../README.md)
 
 
 
