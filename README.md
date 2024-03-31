@@ -65,7 +65,7 @@ lip install github.com/heyhey123-git/QuickBackup@1.0.0
 
 开服后会自动在 `./plugins/QuickBackup/config/config.json`（通常相对于 BDS 服务器可执行文件所在目录）生成配置文件。修改后需要重启服务器才能生效：
 
-```json
+```jsonc
 {
     "language": "zh_CN", // 语言，与/lang里json文件的名字一样
     "BDSpath": "./worlds/Bedrock level", // 你的 BDS 存档路径
