@@ -64,14 +64,14 @@ This plugin registers the top-level command `/backup` for quick and efficient ba
 
 After starting the server, a configuration file will be automatically generated at `./plugins/QuickBackup/config/config.json` (usually relative to the directory where the BDS server executable is located). Any modifications made to this file will require a server restart to take effect:
 
-```json
+```jsonc
 {
-    "language": "zh_CN", // Language
-    "BDSpath": "./worlds/Bedrock level", // Your BDS archive path
+    "language": "zh_CN", // Language. The same name as the json file in /lang
+    "BDSpath": "./worlds/Bedrock level", // Your BDS archive path. 
     "targetPath": "./backup/", // The target folder where you save backups
     "maxRetainDays": 7, // Maximum number of days to retain backup archives
     "TimeOutSecond": 300, // Abort backup if it exceeds the specified time. Unit: seconds
-    "backupType": "7z" // Compression format
+    "backupType": "7z" // Compression format,. Supported: 7z,zip,tar
 }
 ```
 **Note: Please refrain from adding comments in the JSON file, as it may cause reading failures.**
