@@ -61,12 +61,12 @@ flowchart LR
 
 ```json
 {
-    "language": "zh_CN", // 语言
+    "language": "zh_CN", // 语言，与/lang里json文件的名字一样
     "BDSpath": "./worlds/Bedrock level", // 你的 BDS 存档路径
     "targetPath": "./backup/", // 你保存备份的目标文件夹
     "maxRetainDays": 7, // 备份的存档保存的最大天数
     "TimeOutSecond": 300, // 在备份时间超过指定时间后中止。单位：秒
-    "backupType": "7z" // 压缩格式
+    "backupType": "7z" // 压缩格式，支持的有：7z, zip, tar
 }
 ```
 **注意：请不要在Json文件中添加注释，否则可能造成读取失败**
