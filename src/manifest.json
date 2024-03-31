@@ -1,0 +1,10 @@
+{
+    "entry": "index.js",
+    "name": "QuickBackup",
+    "type": "lse-nodejs",
+    "dependencies": [
+        {
+            "name": "legacy-script-engine-nodejs"
+        }
+    ]
+}
