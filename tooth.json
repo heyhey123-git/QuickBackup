@@ -1,0 +1,29 @@
+{
+    "format_version": 2,
+    "tooth": "github.com/heyhey123-git/QuickBackup",
+    "version": "1.0.0",
+    "info": {
+        "name": "QuickBackup",
+        "description": "To help you with backing up your BDS archive easily.",
+        "author": "heyhey123-git",
+        "tags": [
+            "lse",
+            "plugin"
+        ],
+        "avartar_url": "318242636-87242648-35a6-4f0e-9cdd-41150c8fc6e8.png"
+    },
+    "files": {
+        "place": [
+            {
+                "src": "src/*",
+                "dest": "plugins/QuickBackup/"
+            }
+        ]
+    },
+    "prerequisites": {
+        "github.com/LiteLDev/LeviLamina": ">=0.9.0"
+    },
+        "dependencies": {
+        "gitea.litebds.com/LiteLDev/legacy-script-engine-nodejs": ">=0.4.7"
+      }
+}
