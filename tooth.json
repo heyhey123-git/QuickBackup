@@ -10,12 +10,12 @@
             "lse",
             "plugin"
         ],
-        "avartar_url": "318242636-87242648-35a6-4f0e-9cdd-41150c8fc6e8.png"
+        "asset_url": "https://github.com/heyhey123-git/QuickBackup/releases/download/v1.0.0/QuickBackup.zip"
     },
     "files": {
         "place": [
             {
-                "src": "src/*",
+                "src": "QuickBackup/*",
                 "dest": "plugins/QuickBackup/"
             }
         ]
