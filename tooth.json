@@ -13,6 +13,7 @@
             "backup"
         ]
     },
+    "asset_url": "https://github.com/heyhey123-git/QuickBackup/releases/download/v1.0.0/QuickBackup.zip",
     "prerequisites": {
         "github.com/LiteLDev/LeviLamina": "0.10.x"
     },
@@ -22,7 +23,7 @@
     "files": {
         "place": [
             {
-                "src": "src/*",
+                "src": "QuickBackup/*",
                 "dest": "plugins/QuickBackup/"
             }
         ]
