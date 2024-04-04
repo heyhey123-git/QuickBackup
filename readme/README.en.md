@@ -38,7 +38,7 @@ For **LiteloaderBDS**, change the plugin's file extension to `.llplugin` and dir
 ### Installation by Lip
 
 ```bash
-lip install github.com/heyhey123-git/QuickBackup@1.0.0
+lip install github.com/heyhey123-git/QuickBackup
 ```
 
 **Usage**
