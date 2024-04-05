@@ -60,7 +60,7 @@ This plugin registers the top-level command `/backup` for quick and efficient ba
    - When using `query` to retrieve tasks without specifying a task name, all tasks will be returned.
    - Similarly, when using `cancel` to cancel tasks without specifying a task name, all tasks will be canceled.
 
-**配置文件**
+**Configure File**
 
 After starting the server, a configuration file will be automatically generated at `./plugins/QuickBackup/config/config.json` (usually relative to the directory where the BDS server executable is located). Any modifications made to this file will require a server restart to take effect:
 

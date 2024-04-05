@@ -77,7 +77,7 @@ lip install github.com/heyhey123-git/QuickBackup@1.2.0
 }
 ```
 <br/><br/>
-<span id="cron"><h1>Introduction to Cron expressions</h1></span>
+<span id="cron"><h1>对Cron表达式的简介</h1></span>
 cron 表达式是一个字符串，由五或六个字段组成，中间用空格隔开，表示一组时间，通常作为执行某些例程的时间表。
 ```bash
 # ┌───────────── 分钟 (0-59)
