@@ -50,7 +50,7 @@ lip install github.com/heyhey123-git/QuickBackup@1.2.0
 
 2. `/backup [add] <cronExpression: string> <scheduleName: string>`
    - `add`: 枚举项，表示新增一个备份任务
-   - `cronExpression`: 任意合法的 cron 表达式，用于指示任务执行时间，到了规定的时间时会自动在你指定的目标文件夹创建一个存档的备份
+   - `cronExpression`: 任意合法的 [cron 表达式](#cron)，用于指示任务执行时间，到了规定的时间时会自动在你指定的目标文件夹创建一个存档的备份
    - `scheduleName`: 任务的名称，用于区分不同的任务
    - 例：`/backup add "0 0 12 * * ?" test` 表示新增一个名为 "test" 的备份任务，每天 12 点执行一次。启动服务器后会自动在 `schedule.json` 里读取任务列表并载入，不需要在每次进入服务器时都添加任务。
 
