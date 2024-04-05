@@ -74,20 +74,12 @@ module.exports.Run = () => {
         .then((value) => {
             Promise.race([
                 new Promise((resolve, reject) => {
-                    new Promise((resolve, reject) => {
                         archieve
                             .add(path.resolve(temp + "." + backupType), temp, {
                                 t: backupType,
                                 mx: "=" + compressionLevel,
                                 mmt: "=" + threads,
                             })
-                            .then((value) => {
-                                resolve();
-                            })
-                            .catch((e) => {
-                                reject(e);
-                            });
-                    })
                         .then((value) => {
                             writeLog(true, null);
                             logger.info(
