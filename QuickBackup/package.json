@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "@steezcram/sevenzip": "^1.1.6",
     "fs": "^0.0.1-security",
     "fs-extra": "^11.2.0",
+    "node-7z-threetwo": "^2.1.12",
     "node-schedule": "^2.1.1"
   },
   "name": "quickbackup",

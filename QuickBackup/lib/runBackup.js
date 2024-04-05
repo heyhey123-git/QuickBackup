@@ -1,4 +1,4 @@
-const { compress } = require("@steezcram/sevenzip");
+const archieve = require("node-7z-threetwo");
 const fs = require("fs");
 const fse = require("fs-extra");
 const path = require("path");
@@ -30,17 +30,21 @@ module.exports.Run = () => {
     }
     safetyCheck = true;
     let conf = configure.getAll();
-    let BDSpath = conf.get("BDSpath");
+    let BDSpath = configure.get("BDSpath");
     if (!fs.existsSync(BDSpath)) {
         logger.error(translation.get("backup.error.BDS"));
         safetyCheck = false;
         return;
     }
     let date = new Date();
-    let maxRetainDays = conf.get("maxRetainDays");
-    let backupType = conf.get("backupType");
-    let TimeOutSecond = conf.get("TimeOutSecond");
-    let targetPath = conf.get("targetPath");
+    let {
+        maxRetainDays,
+        backupType,
+        TimeOutSecond,
+        targetPath,
+        compressionLevel,
+        threads,
+    } = conf;
     if (!fs.existsSync(targetPath)) {
         try {
             fs.mkdir(targetPath, { recursive: true }, (e) => {
@@ -57,137 +61,150 @@ module.exports.Run = () => {
     }
     mc.runcmd("save hold");
     logger.info(translation.get("backup.ongoing"));
-    let temp = path.join(targetPath + "/__BDSbackupTemp__");
-    Promise.race([
-        new Promise((resolve, reject) => {
-            fse.copySync(BDSpath, temp);
-            resolve();
-        })
-            .then((value) => {
-                log(path.resolve(
-                    targetPath,
-                    "Bedrock_level" + 
-                    date
-                        .toLocaleString()
-                        .replace(/ /g, "")
-                        .replace(/\//g, "")
-                        .replace(/:/g, "") +
-                        "." +
-                        backupType
-                ))
+    let temp = path.resolve(
+        targetPath,
+        "Bedrock_level" +
+            date
+                .toLocaleString()
+                .replace(/ /g, "")
+                .replace(/\//g, "")
+                .replace(/:/g, "")
+    );
+    fse.copy(BDSpath, temp)
+        .then((value) => {
+            Promise.race([
                 new Promise((resolve, reject) => {
-                    compress(
-                        backupType,
-                        {
-                            dir: temp,
-                            destination: path.resolve(
-                                targetPath,
-                                "Bedrock_level" + 
-                                date
-                                    .toLocaleString()
-                                    .replace(/ /g, "")
-                                    .replace(/\//g, "")
-                                    .replace(/:/g, "") +
-                                    "." +
-                                    backupType
-                            ),
-                        },
-                        (e) => {},
-                        (obj) => {}
-                    ).then((value) => {
-                        resolve();
-                    });
-                })
-                    .then((value) => {
-                        writeLog(true, null);
-                        logger.info(
-                            translation.get("backup.succeed") + maxRetainDays
-                        );
+                    new Promise((resolve, reject) => {
+                        archieve
+                            .add(path.resolve(temp + "." + backupType), temp, {
+                                t: backupType,
+                                mx: "=" + compressionLevel,
+                                mmt: "=" + threads,
+                            })
+                            .then((value) => {
+                                resolve();
+                            })
+                            .catch((e) => {
+                                reject(e);
+                            });
                     })
-                    .catch((e) => {
-                        writeLog(false, e.toString());
-                        logger.error(
-                            translation.get("backup.error") + e.toString()
-                        );
-                    })
-                    .finally(() => {
-                        fs.rmSync(temp, { recursive: true });
-                        mc.runcmd("save resume");
-                        safetyCheck = false;
-                    });
-            })
-            .then((value) => {
-                fs.readdir(targetPath, { encoding: "utf-8" }, (e, files) => {
-                    if (e) {
-                        writeLog(false, e.toString());
-                        logger.error(
-                            translation.get("deleteOldBackup.error.readDir") +
-                                e.toString()
-                        );
-                        return;
-                    }
-                    for (let file of files) {
-                        if (!file.includes(backupType)) {
-                            continue;
-                        }
-                        fs.stat(targetPath, (e, stats) => {
-                            let fileDate = new Date(stats.birthtimeMs);
-                            if (date - fileDate > maxRetainDays * 86400000) {
-                                fs.rm(path.join(target + file), (e) => {
-                                    if (e) {
-                                        writeLog(false, e.toString());
-                                        logger.error(
-                                            translation.get(
-                                                "deleteOldBackup.error.delete"
-                                            ) + e.toString()
-                                        );
+                        .then((value) => {
+                            writeLog(true, null);
+                            logger.info(
+                                translation.get("backup.succeed") +
+                                    maxRetainDays
+                            );
+                            resolve();
+                        })
+                        .catch((e) => {
+                            writeLog(false, e.toString());
+                            logger.error(
+                                translation.get("backup.error") + e.toString()
+                            );
+                            reject(e);
+                        })
+                        .finally(() => {
+                            mc.runcmd("save resume");
+                            fs.rmSync(temp, { recursive: true });
+                            safetyCheck = false;
+                        });
+                }).then((value) => {
+                    fs.readdir(
+                        targetPath,
+                        { encoding: "utf-8" },
+                        (e, files) => {
+                            if (e) {
+                                writeLog(false, e.toString());
+                                logger.error(
+                                    translation.get(
+                                        "deleteOldBackup.error.readDir"
+                                    ) + e.toString()
+                                );
+                                return;
+                            }
+                            for (let file of files) {
+                                if (!file.includes(backupType)) {
+                                    continue;
+                                }
+                                fs.stat(targetPath, (e, stats) => {
+                                    let fileDate = new Date(stats.birthtimeMs);
+                                    if (
+                                        date - fileDate >
+                                        maxRetainDays * 86400000
+                                    ) {
+                                        fs.rm(path.join(target + file), (e) => {
+                                            if (e) {
+                                                writeLog(false, e.toString());
+                                                logger.error(
+                                                    translation.get(
+                                                        "deleteOldBackup.error.delete"
+                                                    ) + e.toString()
+                                                );
+                                            }
+                                        });
                                     }
                                 });
                             }
-                        });
+                        }
+                    );
+                }),
+                new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        reject("timeout");
+                    }, TimeOutSecond * 1000);
+                }),
+            ])
+                .then((value) => {
+                    if (maxRetainDays === -1) {
+                        return;
+                    }
+                    fs.readdir(
+                        targetPath,
+                        { encoding: "utf-8" },
+                        (e, files) => {
+                            if (e) {
+                                writeLog(false, e.toString());
+                                logger.error(
+                                    translation.get(
+                                        "deleteOldBackup.error.readDir"
+                                    ) + e.toString()
+                                );
+                                return;
+                            }
+                            for (let file of files) {
+                                if (!file.includes(backupType)) {
+                                    continue;
+                                }
+                                fs.stat(targetPath, (e, stats) => {
+                                    let fileDate = new Date(stats.birthtimeMs);
+                                    if (
+                                        date - fileDate >
+                                        maxRetainDays * 86400000
+                                    ) {
+                                        fs.rm(path.join(target + file), (e) => {
+                                            if (e) {
+                                                writeLog(false, e.toString());
+                                                logger.error(
+                                                    translation.get(
+                                                        "deleteOldBackup.error.delete"
+                                                    ) + e.toString()
+                                                );
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    );
+                })
+                .catch((e) => {
+                    if (e === "timeout") {
+                        logger.error(translation.get("backup.timeout"));
                     }
                 });
-            }),
-        new Promise((resolve, reject) => {
-            setTimeout(() => {
-                reject("timeout");
-            }, TimeOutSecond * 1000);
-        }),
-    ])
-        .then((value) => {
-            fs.readdir(targetPath, { encoding: "utf-8" }, (e, files) => {
-                if (e) {
-                    writeLog(false, e.toString());
-                    logger.error(
-                        translation.get("deleteOldBackup.error.readDir") +
-                            e.toString()
-                    );
-                    return;
-                }
-                for (let file of files) {
-                    if (!file.includes(backupType)) {
-                        continue;
-                    }
-                    fs.stat(targetPath, (e, stats) => {
-                        let fileDate = new Date(stats.birthtimeMs);
-                        if (date - fileDate > maxRetainDays * 86400000) {
-                            fs.rm(path.join(target + file), (e) => {
-                                if (e) {
-                                    writeLog(false, e.toString());
-                                    logger.error(
-                                        translation.get(
-                                            "deleteOldBackup.error.delete"
-                                        ) + e.toString()
-                                    );
-                                }
-                            });
-                        }
-                    });
-                }
-            });
         })
         .catch((e) => {
-            if (e === "timeout")
-                logger.error(translation.get("backup.timeout"));
+            logger.error(translation.get(""));
+            writeLog(false, e.toSting());
         });
 };

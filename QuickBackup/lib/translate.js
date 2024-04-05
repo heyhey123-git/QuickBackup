@@ -1,5 +1,6 @@
-const { writeFileSync } = require("fs");
+const { JsonConfig } = require("./config_lib.js");
 const fs = require("fs");
+const path = require("path");
 
 const languagePath = "./plugins/QuickBackup/lang/";
 let defaultCN = {
@@ -18,6 +19,7 @@ let defaultCN = {
     "backup.succeed": "备份成功！备份保留天数：",
     "backup.timeout": "备份过程超时",
     "backup.error": "备份失败！错误信息：",
+    "backup.copyFailed": "复制存档文件失败！错误信息：",
     "initConfig.error": "初始化配置文件失败！错误信息：",
     "getConfig.error": "读取配置文件失败！ 错误信息：",
     "createSchedule.succeed": "已成功创建一个新的任务",
@@ -32,9 +34,9 @@ let defaultCN = {
     "cancel.succeed": "取消任务成功：",
     "cancel.failed": "没有找到名字所对应的任务。",
     "scheduleFile.error": "试图读/写任务文件时失败",
-    "schedule.addSucceed":"成功创建一个新的备份任务",
-    "schedule.notCron":"传入的Cron表达式不合法，创建失败",
-    "schedule.repetitive":"已经有一个相同名称的任务了，创建失败"
+    "schedule.addSucceed": "成功创建一个新的备份任务",
+    "schedule.notCron": "传入的Cron表达式不合法，创建失败",
+    "schedule.repetitive": "已经有一个相同名称的任务了，创建失败",
 };
 let defaultEN = {
     "command.description":
@@ -44,6 +46,7 @@ let defaultEN = {
     "initTranslation.error.target": "target",
     "getTranslation.error":
         "Can't read a language file like this, now use the initial translation",
+    "backup.copyFailed": "Failed to copy files! error message:",
     "backup.error.BDS": "BDS folder selection error, there is no such folder",
     "backup.error.mkdir":
         "The backup destination folder does not exist, and the creation of such a folder failed. Error message:",
@@ -73,10 +76,12 @@ let defaultEN = {
     "cancel.failed": "Didn't find such a task.",
     "scheduleFile.error":
         "Failed while trying to  read or write the schedule file:",
-        
-    "schedule.addSucceed":"A new backup task is created successfully.",
-    "schedule.notCron":"The task creation failed because the incoming Cron expression was invalid",
-    "schedule.repetitive":"Since there is already a task with the same name, the task creation fails"
+
+    "schedule.addSucceed": "A new backup task is created successfully.",
+    "schedule.notCron":
+        "The task creation failed because the incoming Cron expression was invalid",
+    "schedule.repetitive":
+        "Since there is already a task with the same name, the task creation fails",
 };
 let loggerLanguage = defaultCN;
 /**
@@ -84,48 +89,47 @@ let loggerLanguage = defaultCN;
  */
 var translationMap;
 
-const  configure  = require("./config.js");
+const configure = require("./config.js");
 class translation {
     static init() {
-        if (!fs.existsSync(languagePath)) {
-            fs.mkdir(languagePath, (e) => {
-                if (e) {
-                    let realPath = fs.realpathSync(languagePath);
-                    logger.error(
-                        loggerLanguage["initTranslation.error"] +
-                            "" +
-                            loggerLanguage["initTranslation.error.target"] +
-                            " : " +
-                            realPath +
-                            "\n" +
-                            e.toString()
+        let CN = new JsonConfig(
+            path.join(languagePath, "zh_CN.json"),
+            defaultCN
+        );
+        let EN = new JsonConfig(
+            path.join(languagePath, "en_US.json"),
+            defaultEN
+        );
+        switch (configure.get("language")) {
+            case "zh_CN":
+                translationMap = new Map(Object.entries(CN.getData()));
+                break;
+            case "en_US":
+                translationMap = new Map(Object.entries(EN.getData()));
+                break;
+            default:
+                try {
+                    let languageFileData = JSON.parse(
+                        fs
+                            .readFileSync(
+                                path.join(
+                                    languagePath,
+                                    configure.get("language")
+                                ),
+                                "utf-8"
+                            )
+                            .toString()
                     );
+                    translationMap = new Map(Object.entries(languageFileData));
+                    break;
+                } catch (e) {
+                    logger.error(
+                        loggerLanguage["getTranslation.error"] + e.toString()
+                    );
+                    translationMap = new Map(Object.entries(CN.getData()));
+                    break;
                 }
-            });
-            writeFileSync(
-                languagePath + "zh_CN.json",
-                JSON.stringify(defaultCN, null, "\t")
-            );
-            writeFileSync(
-                languagePath + "en_US.json",
-                JSON.stringify(defaultEN, null, "\t")
-            );
-            translationMap = new Map(Object.entries(loggerLanguage));
-            return;
         }
-        let language = configure.get("language");
-        let _data = fs.readFileSync(languagePath + language + ".json","utf-8");
-            if (!_data) {
-                logger.error(
-                    loggerLanguage["getTranslation.error"] +
-                        "\n"
-                );
-                translationMap = new Map(Object.entries(loggerLanguage));
-                return;
-            }
-            let languageObj = JSON.parse(_data);
-            translationMap = new Map(Object.entries(languageObj));
-        ;
     }
 
     /**
@@ -140,4 +144,4 @@ class translation {
 }
 translation.init();
 
-module.exports =  translation ;
+module.exports = translation;

@@ -1,4 +1,4 @@
-const fs = require("fs");
+const { JsonConfig } = require("./config_lib.js");
 
 const configPath = "./plugins/QuickBackup/config/config.json";
 let configInit = {
@@ -8,15 +8,18 @@ let configInit = {
     maxRetainDays: 7,
     TimeOutSecond: 300,
     backupType: "7z",
+    compressionLevel: 1,
+    threads: 1,
 };
+
 /**
- * @typedef {Map<string,string>} config
+ * @type {Map<string>,<any>} config
  */
 var config;
 
 class configure {
     static getAll() {
-        return config;
+        return Object.fromEntries(config.entries());
     }
     static get(key) {
         if (!config.has(key)) {
@@ -26,48 +29,8 @@ class configure {
         return result ? result : null;
     }
     static init() {
-        if (!fs.existsSync(configPath)) {
-            fs.mkdir("./plugins/QuickBackup/config/", (e) => {
-                config = new Map(Object.entries(configInit));
-                fs.writeFile(
-                    configPath,
-                    JSON.stringify(configInit, null, "\t"),
-                    (e) => {
-                        if (e) {
-                            logger.error(
-                                "初始化配置文件失败！错误信息：",
-                                "\nFailed to initialize configuration file! Error message:",
-                                e.toString()
-                            );
-                        }
-                    }
-                );
-            });
-            return;
-        }
-        let _data = fs.readFileSync(configPath,"utf-8");
-            let configNow;
-            try {
-                configNow = JSON.parse(_data);
-            } catch (e) {
-                fs.rmSync(configPath);
-                initConfig();
-                return;
-            }
-            let ChangeOrNot = false;
-            for (let item in configInit) {
-                if (configNow[item] === void 0) {
-                    configNow[item] = configInit[item];
-                    ChangeOrNot = true;
-                }
-            }
-            config = new Map(Object.entries(configNow));
-            if (ChangeOrNot === true) {
-                fs.writeFileSync(
-                    configPath,
-                    JSON.stringify(configNow, null, "\t")
-                );
-            }
+        let configData = new JsonConfig(configPath, configInit);
+        config = new Map(Object.entries(configData.getData()));
     }
 }
 configure.init();

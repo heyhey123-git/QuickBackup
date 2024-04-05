@@ -2,19 +2,18 @@ const { scheduleJob, gracefulShutdown } = require("node-schedule");
 const { parseExpression } = require("cron-parser");
 const { Run } = require("./runBackup.js");
 const translation = require("./translate");
-const {
-    writeFile,
-    existsSync,
-    writeFileSync,
-    readFileSync,
-} = require("fs");
+const { JsonConfig } = require("./config_lib.js");
+const { writeFileSync } = require("fs");
+const scheduleFile = "./plugins/QuickBackup/schedule.json";
 
+/**
+ * @type {JsonConfig}
+ */
+var scheduleData;
 /**
  * @type {Map<String,scheduleTask>} 包括全部任务class的列表
  */
-var allSchedules = new Map();
-
-const scheduleFile = "./plugins/QuickBackup/schedule.json";
+var allSchedules;
 
 class scheduleTask {
     /**
@@ -36,21 +35,10 @@ class scheduleTask {
         this.task = scheduleJob(Cron, () => {
             Run();
         });
-        allSchedules.set(name, this);
-        let _data = readFileSync(scheduleFile, "utf-8");
-        if (!_data) {
-            logger.error(translation.get("scheduleFile.error"));
+        if (!scheduleData.get(name)) {
+            scheduleData.set(name, Cron);
         }
-        let schedules = JSON.parse(_data);
-        schedules[name] = Cron;
-        writeFile(scheduleFile, JSON.stringify(schedules, null, "\t"), (e) => {
-            if (e) {
-                logger.error(
-                    translation.get(scheduleFile.error) + e.toString()
-                );
-            }
-        });
-        return true
+        return true;
     }
     static getallSchedules = () => {
         let msg = "";
@@ -74,28 +62,7 @@ class scheduleTask {
             if (res) {
                 let { time } = allSchedules.get(name);
                 allSchedules.delete(name);
-                let _data = readFileSync(scheduleFile, "utf-8");
-                if (!_data) {
-                    logger.error(
-                        translation.get("scheduleFile.error") + e.toString()
-                    );
-                    return null;
-                }
-                let schedules = JSON.parse(_data.toString());
-                delete schedules[name];
-                writeFile(
-                    scheduleFile,
-                    JSON.stringify(schedules, null, "\t"),
-                    (e) => {
-                        if (e) {
-                            logger.error(
-                                translation.get(scheduleFile.error) +
-                                    e.toString()
-                            );
-                            return translation.get("cancel.failed");
-                        }
-                    }
-                );
+                scheduleData.delete(name);
                 return (
                     translation.get("cancel.succeed") + name + " (" + time + ")"
                 );
@@ -121,26 +88,12 @@ class scheduleTask {
         return translation.get("query.noResult");
     };
     static init = () => {
-        if (!existsSync(scheduleFile)) {
-            writeFile(scheduleFile, "{}", (e) => {
-                if (e) {
-                    logger.error(
-                        translation.get("scheduleFile.error") + e.toString()
-                    );
-                    return;
-                }
-            });
-            return;
+        scheduleData = new JsonConfig(scheduleFile, {});
+        allSchedules = new Map();
+        let scheduleObj = scheduleData.getData();
+        for (let name in scheduleObj) {
+            allSchedules.set(name, new scheduleTask(scheduleObj[name], name));
         }
-        let _data = readFileSync(scheduleFile,"utf-8")
-            if (!_data) {
-                translation.get("scheduleFile.error");
-                return;
-            }
-            let schedules = JSON.parse(_data.toString());
-            for (let schedule in schedules) {
-                new scheduleTask(schedules[schedule], schedule);
-            }
     };
 }
 scheduleTask.init();
