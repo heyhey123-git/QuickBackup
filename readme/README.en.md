@@ -38,7 +38,7 @@ For **LiteloaderBDS**, change the plugin's file extension to `.llplugin` and dir
 ### Installation by Lip
 
 ```bash
-lip install github.com/heyhey123-git/QuickBackup
+lip install github.com/heyhey123-git/QuickBackup@1.2.0
 ```
 
 **Usage**
@@ -49,7 +49,7 @@ This plugin registers the top-level command `/backup` for quick and efficient ba
 
 2. `/backup [add] <cronExpression: string> <scheduleName: string>`
    - `add`: Enumerated option indicating the addition of a backup task.
-   - `cronExpression`: Any valid cron expression specifying the execution time for the task. When the specified time arrives, an archive backup will be automatically created in your designated target folder.
+   - `cronExpression`: Any valid [cron expression](#cron) specifying the execution time for the task. When the specified time arrives, an archive backup will be automatically created in your designated target folder.
    - `scheduleName`: The name of the task, used to differentiate between different tasks.
    - Example: `/backup add "0 0 12 * * ?" test` adds a backup task named "test" that executes daily at 12:00. The server will automatically read the task list from `schedule.json` upon startup, eliminating the need to add tasks every time you enter the server.
 
@@ -71,7 +71,23 @@ After starting the server, a configuration file will be automatically generated 
     "targetPath": "./backup/", // The target folder where you save backups
     "maxRetainDays": 7, // Maximum number of days to retain backup archives
     "TimeOutSecond": 300, // Abort backup if it exceeds the specified time. Unit: seconds
-    "backupType": "7z" // Compression format,. Supported: 7z,zip,tar
+    "backupType": "7z", // Compression formats supported: 7z, zip, tar and other formats that supported by 7-zip. 
+    "compression level":1,// from 1 to 9 in ascending order, 1 is recommended.
+    "threads": 1//Number of computer threads used for compression.
 }
 ```
-**Note: Please refrain from adding comments in the JSON file, as it may cause reading failures.**
+<br/><br/>
+<span id="cron"><h1>Introduction to Cron expressions</h1></span>
+A cron expression is a string comprising five or six fields separated by white space that represents a set of times, normally as a schedule to execute some routine.
+```bash
+# ┌───────────── minute (0–59)
+# │ ┌───────────── hour (0–23)
+# │ │ ┌───────────── day of the month (1–31)
+# │ │ │ ┌───────────── month (1–12)
+# │ │ │ │ ┌───────────── day of the week (0–6) (Sunday to Saturday;
+# │ │ │ │ │                                   7 is also Sunday on some systems)
+# │ │ │ │ │
+# │ │ │ │ │
+# * * * * * <command to execute>
+```
+You can click here to see the specific introduction: [click me](https://www.baeldung.com/cron-expressions)

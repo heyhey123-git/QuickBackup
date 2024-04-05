@@ -39,7 +39,7 @@ flowchart LR
 ### 使用 Lip
 
 ```bash
-lip install github.com/heyhey123-git/QuickBackup
+lip install github.com/heyhey123-git/QuickBackup@1.2.0
 ```
 
 **使用**
@@ -72,7 +72,23 @@ lip install github.com/heyhey123-git/QuickBackup
     "targetPath": "./backup/", // 你保存备份的目标文件夹
     "maxRetainDays": 7, // 备份的存档保存的最大天数
     "TimeOutSecond": 300, // 在备份时间超过指定时间后中止。单位：秒
-    "backupType": "7z" // 压缩格式，支持的有：7z, zip, tar
+    "backupType": "7z", // 压缩格式，支持的有：7z, zip, tar等7-zip支持的所有格式 
+    "compressionLevel": 1,//压缩等级，从1到9依次升高，建议填1
+    "threads": 1//压缩时使用的计算机线程数量
 }
 ```
-**注意：请不要在Json文件中添加注释，否则可能造成读取失败**
+<br/><br/>
+<span id="cron"><h1>Introduction to Cron expressions</h1></span>
+cron 表达式是一个字符串，由五或六个字段组成，中间用空格隔开，表示一组时间，通常作为执行某些例程的时间表。
+```bash
+# ┌───────────── 分钟 (0-59)
+# │ ┌───────────── 小时 (0-23)
+# │ │ ┌───────────── 月日 (1-31)
+# │ │ │ ┌───────────── 月 (1-12)
+# │ │ │ │ ┌───────────── 星期（0-6）（星期日至星期六；
+# │ │ │ │ │   7 在某些系统中也是星期日）
+# │ │ │ │ │
+# │ │ │ │ │
+# * * * * * <要执行的命令>
+```
+您可以点击这里查看具体介绍: [点我](https://cron.qqe2.com/)
