@@ -6,7 +6,7 @@
     "node-schedule": "^2.1.1"
   },
   "name": "quickbackup",
-  "version": "1.0.0",
+  "version": "1.2.1",
   "description": "To help you with backing up your BDS archive easily.",
   "main": "index.js",
   "scripts": {
