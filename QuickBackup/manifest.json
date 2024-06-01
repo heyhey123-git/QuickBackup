@@ -2,7 +2,7 @@
     "entry": "index.js",
     "name": "QuickBackup",
     "type": "lse-nodejs",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "dependencies": [
         {
             "name": "legacy-script-engine-nodejs"
