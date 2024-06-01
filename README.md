@@ -38,7 +38,7 @@ flowchart LR
 ### 使用 Lip
 
 ```bash
-lip install github.com/heyhey123-git/QuickBackup@1.2.0
+lip install github.com/heyhey123-git/QuickBackup
 ```
 
 **使用**
