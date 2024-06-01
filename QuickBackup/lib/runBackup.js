@@ -124,7 +124,7 @@ module.exports.Run = () => {
                                         date - fileDate >
                                         maxRetainDays * 86400000
                                     ) {
-                                        fs.rm(path.join(target + file), (e) => {
+                                        fs.rm(path.join(targetPath , file), (e) => {
                                             if (e) {
                                                 writeLog(false, e.toString());
                                                 logger.error(
